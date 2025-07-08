@@ -27,11 +27,15 @@ class PwManager{
         void failedLogin();
         void displayMenu();
         void displayHelper(const std::string& msg);
-        void savePassword(const std::string& site, const std::string& password);
+        void savePassword(const std::string& site, const std::string& username, const std::string& password);
         void loadPasswords();
         std::string generatePassword();
         int pwdLength();
         void generatePasswordMenu();
         void possibleKeys(const int& choice);
-        
+        void searchPasswordByWebsite();
+        void viewAllPasswords();
+        bool linearSearch(const std::string& targetSite, std::string& foundPassword);
+
+
 };

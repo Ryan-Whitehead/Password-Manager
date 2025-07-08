@@ -4,6 +4,7 @@ WORKING_DIR = ./
 #Add each subfolder as include directories 
 CXX = g++
 CXXFLAGS = -std=c++17 -g -Wall -O2
+LDFLAGS = -lcrypto 
 
 PROG ?= main
 
@@ -20,10 +21,10 @@ mainprog: $(PROG)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 $(PROG): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
 clean:
-	rm -rf $(PROG) *.o *.out \
+	rm -rf $(PROG) *.o *.out *.txt \
 	$(WORKING_DIR)/*.o
 
 rebuild: clean mainprog

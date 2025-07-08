@@ -4,8 +4,8 @@
 #include <sstream>
 
 /**
- * @brief a constructor for password Manager class
- * @par choice 
+ * @brief Default constructor for password Manager class
+ * Initalizes the PasswordManager object with default values. The siteAndPwd member is initialized with empty strings.
  */
 PwManager::PwManager() : siteAndPwd("", " "){
     // Constructor initializes member variables
@@ -100,9 +100,7 @@ void PwManager::displayHelper(const std::string& msg){
     std::cout << msg <<std::endl;
     
 }
-void PwManager::startMenu(){
-    displayHelper("Provide your username: \n");
-}
+
 void PwManager::displayMenu(){
     displayHelper("\nPassword Manager");
     displayHelper(" 1. Add Password");
@@ -111,11 +109,11 @@ void PwManager::displayMenu(){
     displayHelper(" 4. Exit");
     displayHelper("Enter your choice: ");
 }
-void PwManager::savePassword(const std::string& site, const std::string& password){
+void PwManager::savePassword(const std::string& site, const std::string& username, const std::string& password){
     //Creates an object of file and opens a file (aka a text file), app adds to the file if it exists
     std::ofstream file("passwords.txt", std::ios::app);
     if(file.is_open()){
-        file << site << " " << password << "\n";
+        file << site << " " << username << " " << password << "\n";
         file.close();
         displayHelper("Password saved successfully!");
     }
@@ -125,7 +123,36 @@ void PwManager::savePassword(const std::string& site, const std::string& passwor
 }
 
 void PwManager::loadPasswords(){
-    std::ifstream file("passwords.txt");
+    displayHelper("\n 1. View all passwords");
+    displayHelper("2. Search fpr specific website");
+    displayHelper("Enter your choice: ");
+
+    int choice;
+    std::cin >> choice;
+
+    if (choice ==1){
+        viewAllPasswords();
+    }
+    else if (choice == 2) {
+        std::string searchTerm, foundPassword;
+        displayHelper("Enter the website name to search for: ");
+        std::cin.ignore();
+        std::getline(std::cin, searchTerm);
+
+        if (linearSearch(searchTerm, foundPassword)){
+            displayHelper("\nFound matching password: ");
+            std::cout << "Site: " << searchTerm << ", Password: " << foundPassword << "\n";
+
+        }else {
+                displayHelper("\nNo password found for: " + searchTerm);
+        }
+    }
+    else{
+        displayHelper("Invalid choice!");
+    }
+}
+void PwManager::viewAllPasswords(){
+    std::ifstream file(username + ".txt");
     if (file.is_open()){
         std::string site, password;
         displayHelper("\nSaved Passwords: ");
@@ -137,8 +164,27 @@ void PwManager::loadPasswords(){
     else {
         std::cerr << "\n[System] no passwords saved yet. \n";
     }
-
 }
+
+bool PwManager::linearSearch(const std::string& targetSite, std::string& foundPassword) {
+    std::ifstream file("passwords.txt");
+    if (!file.is_open()) {
+        return false;
+    }
+
+    std::string site, password;
+    while (file >> site >> password) {
+        if (site == targetSite) {
+            foundPassword = password;
+            file.close();
+            return true;
+        }
+    }
+    
+    file.close();
+    return false;
+}
+
 
 void PwManager::generatePasswordMenu(){
     displayHelper("Choose which characters you'd like to include");
@@ -182,9 +228,7 @@ std::string PwManager::generatePassword(){
         }
     }while (choice != 6 && choice != 7);
 
-    if (choice == 6 & !possibleChars.empty()){
-        
-    }
+    if (choice == 6 && !possibleChars.empty()){
         std::random_device rd;
             std::mt19937 generator(rd());
             std::uniform_int_distribution<> distribution(0, possibleChars.size() - 1);
@@ -194,6 +238,8 @@ std::string PwManager::generatePassword(){
             for (int i = 0; i < passwordLength; ++i) {
                 password += possibleChars[distribution(generator)];
             }
+    }
+        
             
             return password;
 }

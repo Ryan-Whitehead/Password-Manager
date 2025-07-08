@@ -3,7 +3,7 @@
 
 int main(){
     int choice;
-    std::string site, password;
+    std::string site, username, password;
     PwManager manager;
 
     manager.startMenu();
@@ -22,6 +22,8 @@ int main(){
         case 1:
             manager.displayHelper("Enter site name");
             std::cin >> site;
+            manager.displayHelper("Enter username: ");
+            std::cin >> username;
             manager.displayHelper("Enter password (or type 'generate' to create one): ");
                 std::cin >> password;
                 
@@ -31,7 +33,7 @@ int main(){
                         manager.displayHelper("Generated password: " + password);
                     }
                 }
-                manager.savePassword(site, password);
+                manager.savePassword(site, username, password);
                 break;
         case 2:
             manager.loadPasswords();
